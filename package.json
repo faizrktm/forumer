@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "riteway -r @babel/register -r @babel/polyfill src/**/*.test.js"
   },
   "dependencies": {
+    "firebase": "^7.15.5",
+    "firebase-admin": "^8.12.1",
     "grommet": "^2.14.0",
     "grommet-icons": "^4.4.0",
     "next": "9.4.4",
@@ -17,12 +20,17 @@
     "styled-components": "^5.1.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.10.3",
+    "@babel/polyfill": "^7.10.1",
+    "@babel/register": "^7.10.3",
+    "babel-plugin-module-resolver": "^4.0.0",
     "babel-plugin-styled-components": "^1.10.7",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-jsx-a11y": "^6.3.0",
     "eslint-plugin-react": "^7.20.0",
-    "eslint-plugin-react-hooks": "^4"
+    "eslint-plugin-react-hooks": "^4",
+    "riteway": "^6.1.2"
   }
 }
