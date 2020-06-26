@@ -2,7 +2,7 @@ import { grommet } from 'grommet';
 import { deepMerge } from 'grommet/utils';
 
 const theme = deepMerge(grommet, {
-  defaultMode: "light",
+  defaultMode: 'light',
   global: {
     colors: {
       brand: '#1278CE',
@@ -24,50 +24,50 @@ const theme = deepMerge(grommet, {
     input: {
       weight: 'normal',
       font: {
-        weight: 'normal'
+        weight: 'normal',
       },
       padding: {
         horizontal: '16px',
-        vertical: '8px'
-      }
+        vertical: '8px',
+      },
     },
     control: {
       border: {
-        radius: '8px'
-      }
-    }
+        radius: '8px',
+      },
+    },
   },
   text: {
     small: {
       size: '14px',
-      height: '21px'
+      height: '21px',
     },
     medium: {
       size: '16px',
-      height: '24px'
+      height: '24px',
     },
     large: {
       size: '24px',
-      height: '36px'
+      height: '36px',
     },
     xlarge: {
       size: '32px',
-      height: '48px'
+      height: '48px',
     },
   },
   button: {
     padding: {
-      vertical: '8px'
+      vertical: '8px',
     },
     border: {
-      radius: '8px'
-    }
+      radius: '8px',
+    },
   },
   select: {
     icons: {
-      color: 'text'
-    }
-  }
+      color: 'text',
+    },
+  },
 });
 
 export default theme;
