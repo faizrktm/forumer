@@ -34,8 +34,10 @@ const AuthenticatedProvider = ({ children, user }) => {
     try {
       const response = await signIn(type, body);
       setCurrentUser(response);
+      return true;
     } catch (error) {
-      console.log('error authenticate user', error.message);
+      // console.log('error authenticate user', error.message);
+      return Promise.reject(error);
     }
   }, []);
 
@@ -43,8 +45,10 @@ const AuthenticatedProvider = ({ children, user }) => {
     try {
       const response = await signUp(body);
       setCurrentUser(response);
+      return true;
     } catch (error) {
-      console.log('error authenticate user', error.message);
+      // console.log('error authenticate user', error.message);
+      return Promise.reject(error);
     }
   }, []);
 
