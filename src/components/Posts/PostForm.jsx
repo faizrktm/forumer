@@ -5,7 +5,6 @@ import {
   Form,
   Button,
   Box,
-  Text,
   TextInput,
 } from 'grommet';
 import { addPost } from 'helper/posts';
@@ -25,7 +24,7 @@ const Post = () => {
 
   const onNavigateToLogin = useCallback((e) => {
     e.preventDefault();
-    router.push('/signin');
+    router.push('/login');
   }, []);
 
   if (!isLoggedIn) {
@@ -53,7 +52,7 @@ const Post = () => {
             />
           </FormField>
           <Box margin={{ top: 'small' }}>
-            <Button type="submit" color="brand" primary label={<Text color="white">{buttonText}</Text>} alignSelf="start" />
+            <Button type="submit" color="brand" primary label={buttonText} alignSelf="start" />
           </Box>
         </Form>
       </Box>
