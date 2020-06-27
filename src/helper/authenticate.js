@@ -24,12 +24,37 @@ export const validate = async () => {
     return Promise.reject(error);
   }
 };
+
+export const signOut = async () => {
+  try {
+    await firebase.auth().signOut();
+    return true;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ *
+ * @param {{email, password}} body
+ */
+export const signUp = async (body) => {
+  const { email, password } = body;
+  try {
+    await firebase.auth().createUserWithEmailAndPassword(email, password);
+    const token = await validate();
+    return token;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  *
  * @param {[google,password]} type
  * @param {{email, password}?} body only pass this if using password type of authentication
  */
-async function authenticate(type, body) {
+export async function signIn(type, body) {
   try {
     let result = {};
     if (type === 'google') {
@@ -39,10 +64,15 @@ async function authenticate(type, body) {
       result = token;
     }
 
+    if (type === 'form') {
+      const { email, password } = body;
+      await firebase.auth().signInWithEmailAndPassword(email, password);
+      const token = await validate();
+      result = token;
+    }
+
     return result;
   } catch (error) {
     return Promise.reject(error);
   }
 }
-
-export default authenticate;
