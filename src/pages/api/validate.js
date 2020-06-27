@@ -9,6 +9,7 @@ const validate = async (token) => {
       user: {
         uid: user.uid,
         email: user.email,
+        name: user.displayName,
       },
       token,
     };
