@@ -1,13 +1,27 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
-import { Text } from 'grommet';
+import {
+  Anchor,
+  Box,
+  Text,
+} from 'grommet';
+import { AuthenticatedContext } from './Authenticated';
 
-const Header = () => (
-  <Container>
-    <Wrapper>
-      <Text color="brand" size="xlarge" weight="bold">Forumer</Text>
-    </Wrapper>
-  </Container>
-);
+const Header = () => {
+  const { logout, isLoggedIn } = useContext(AuthenticatedContext);
+  return (
+    <Container>
+      <Wrapper>
+        <Text color="brand" size="xlarge" weight="bold">Forumer</Text>
+        {isLoggedIn && (
+          <Box>
+            <Anchor label={<Text size="small">Logout</Text>} onClick={logout} />
+          </Box>
+        )}
+      </Wrapper>
+    </Container>
+  );
+};
 
 export default Header;
 
@@ -24,8 +38,9 @@ const Container = styled.header`
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   height: 74px;
   width: 100%;
   margin: 0px auto;
