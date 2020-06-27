@@ -9,7 +9,11 @@ const Posts = () => {
   return (
     <Box gap="small" margin={{ top: 'medium' }}>
       {Object.keys(data).map((item) => (
-        <PostCard key={item} content={data[item].content} />
+        <PostCard
+          key={item}
+          content={data[item].content}
+          name={data[item].user.name}
+        />
       ))}
     </Box>
   );
