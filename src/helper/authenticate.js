@@ -28,6 +28,7 @@ export const validate = async () => {
 export const signOut = async () => {
   try {
     await firebase.auth().signOut();
+    cookies.remove(config.TOKEN_COOKIES_NAME);
     return true;
   } catch (error) {
     return Promise.reject(error);
