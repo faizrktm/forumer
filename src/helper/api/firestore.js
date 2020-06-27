@@ -3,6 +3,7 @@ import admin from './admin';
 
 const keys = {
   POSTS: 'posts',
+  USERS: 'users',
 };
 
 class FirestoreEntry {
@@ -11,9 +12,22 @@ class FirestoreEntry {
     this.collection = admin.firestore().collection(key);
   }
 
-  async lists() {
+  /**
+   *
+   * @param {Array} query example: [['uid', 'in', ['a', 'b']]]
+   */
+  async lists(query) {
     try {
-      const snapshot = await this.collection.get();
+      let snapshot = null;
+      if (query) {
+        snapshot = this.collection;
+        query.forEach((item) => {
+          snapshot = snapshot.where(...item);
+        });
+        snapshot = await snapshot.get();
+      } else {
+        snapshot = await this.collection.get();
+      }
       let result = {};
       if (snapshot.empty) {
         return result;
@@ -48,6 +62,18 @@ class FirestoreEntry {
     }
   }
 
+  async set(doc, payload) {
+    try {
+      await this.collection.doc(doc).set(payload);
+      return {
+        id: doc,
+        ...payload,
+      };
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   async add(payload) {
     try {
       const { FieldValue } = admin.firestore;
@@ -67,10 +93,15 @@ class FirestoreEntry {
 class Firestore {
   constructor() {
     this.posts = new FirestoreEntry(keys.POSTS);
+    this.users = new FirestoreEntry(keys.USERS);
   }
 
   posts() {
     return this.posts;
+  }
+
+  users() {
+    return this.users;
   }
 }
 
