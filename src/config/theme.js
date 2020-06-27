@@ -7,10 +7,13 @@ const theme = deepMerge(grommet, {
     colors: {
       'status-up': '#0F866C',
       'status-down': '#FF0000',
-      brand: '#0D97FF',
+      brand: {
+        dark: '#fff',
+        light: '#0D97FF',
+      },
       text: {
-        dark: '#3A464F',
-        light: '#444444',
+        dark: '#fff',
+        light: '#3A464F',
       },
       dark: '#4A4A4A',
       grey: '#F9F9F9',
