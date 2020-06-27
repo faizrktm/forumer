@@ -1,4 +1,5 @@
 import admin from 'helper/api/admin';
+import firestore from 'helper/api/firestore';
 import { responseError, responseSuccess } from 'helper/api/response';
 
 const validate = async (token) => {
@@ -13,6 +14,7 @@ const validate = async (token) => {
       },
       token,
     };
+    await firestore.users.set(user.uid, result.user);
     return result;
   } catch (error) {
     return Promise.reject(error);
