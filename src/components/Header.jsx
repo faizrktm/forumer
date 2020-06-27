@@ -1,12 +1,10 @@
 import styled from 'styled-components';
-
-import { selectColor } from 'helper/theme';
 import { Text } from 'grommet';
 
 const Header = () => (
   <Container>
     <Wrapper>
-      <Text color="white">Forumer</Text>
+      <Text color="brand" size="xlarge" weight="bold">Forumer</Text>
     </Wrapper>
   </Container>
 );
@@ -20,7 +18,8 @@ const Container = styled.header`
   left: 0;
   right: 0;
   z-index: 11;
-  background-color: ${selectColor('brand')};
+  background-color: white;
+  border-bottom: 1px solid #E1E1E1;
 `;
 
 const Wrapper = styled.div`

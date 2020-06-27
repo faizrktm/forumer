@@ -3,5 +3,6 @@ export default {
   TOKEN_COOKIES_NAME: 'GoogleIDToken',
   API: {
     VALIDATE: `${server}/api/validate`,
+    POSTS: `${server}/api/posts`,
   },
 };
