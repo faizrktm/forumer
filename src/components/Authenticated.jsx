@@ -1,12 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import authenticate, { validate } from 'helper/authenticate';
+import {
+  signIn,
+  validate,
+  signUp,
+  signOut,
+} from 'helper/authenticate';
 
 const AuthenticatedContext = React.createContext();
 
 const AuthenticatedProvider = ({ children, user }) => {
   const [currentUser, setCurrentUser] = useState(user);
   const logout = () => {
+    signOut();
     setCurrentUser(undefined);
   };
 
@@ -18,7 +24,7 @@ const AuthenticatedProvider = ({ children, user }) => {
           const result = await validate();
           setCurrentUser(result);
         } catch (error) {
-          console.log('token expired', error.message);
+          console.log(error.message);
         }
       })();
     }
@@ -26,7 +32,16 @@ const AuthenticatedProvider = ({ children, user }) => {
 
   const login = useCallback(async (type, body) => {
     try {
-      const response = await authenticate(type, body);
+      const response = await signIn(type, body);
+      setCurrentUser(response);
+    } catch (error) {
+      console.log('error authenticate user', error.message);
+    }
+  }, []);
+
+  const register = useCallback(async (body) => {
+    try {
+      const response = await signUp(body);
       setCurrentUser(response);
     } catch (error) {
       console.log('error authenticate user', error.message);
@@ -39,6 +54,7 @@ const AuthenticatedProvider = ({ children, user }) => {
       user: currentUser,
       logout,
       login,
+      register,
     }}
     >
       {children}
