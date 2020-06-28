@@ -1,6 +1,7 @@
 import { responseError, responseSuccess } from 'helper/api/response';
 import firestore from 'helper/api/firestore';
 import { getArrayUserIds, attachUserToPosts, attachCommentsToPosts } from 'helper/api/posts';
+import authMiddleware from 'helper/api/authMiddleware';
 
 const restructureData = async (post) => {
   const userIds = getArrayUserIds(post);
@@ -24,37 +25,46 @@ const restructureData = async (post) => {
   return result;
 };
 
+const handlePost = async (req, res) => {
+  const {
+    body,
+  } = req;
+  try {
+    let payload = { ...body };
+    if (!body.reference) {
+      payload = { ...payload, reference: null };
+    }
+    let result = await firestore.posts.add(payload);
+    result = await restructureData({
+      [result.id]: result,
+    });
+    result = result[Object.keys(result)[0]];
+    res.status(200).send(responseSuccess(200, result));
+  } catch (err) {
+    res.status(500).send(responseError(500, err.message));
+  }
+};
+
+const handleGet = async (_req, res) => {
+  try {
+    let result = await firestore.posts.lists([['reference', '==', null]], [['timestamp', 'desc']], 10);
+    result = await restructureData(result);
+    res.status(200).send(responseSuccess(200, result));
+  } catch (err) {
+    res.status(500).send(responseError(500, err.message));
+  }
+};
+
 export default async (req, res) => {
   const {
     method,
-    body,
   } = req;
   if (method === 'GET') {
-    try {
-      let result = await firestore.posts.lists([['reference', '==', null]], [['timestamp', 'desc']]);
-      result = await restructureData(result);
-      res.status(200).send(responseSuccess(200, result));
-    } catch (err) {
-      res.status(500).send(responseError(500, err.message));
-    }
+    await handleGet(req, res);
     return;
   }
-
   if (method === 'POST') {
-    try {
-      let payload = { ...body };
-      if (!body.reference) {
-        payload = { ...payload, reference: null };
-      }
-      let result = await firestore.posts.add(payload);
-      result = await restructureData({
-        [result.id]: result,
-      });
-      result = result[Object.keys(result)[0]];
-      res.status(200).send(responseSuccess(200, result));
-    } catch (err) {
-      res.status(500).send(responseError(500, err.message));
-    }
+    await authMiddleware((_req, _res) => handlePost(_req, _res))(req, res);
     return;
   }
 

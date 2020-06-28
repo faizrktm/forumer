@@ -1,12 +1,11 @@
 import config from 'config';
 
-// eslint-disable-next-line import/prefer-default-export
-export async function addPost(payload, token) {
+export async function addPost(payload, user) {
   const options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: JSON.stringify(token),
+      Authorization: JSON.stringify(user),
     },
     body: JSON.stringify(payload),
   };
@@ -22,12 +21,12 @@ export async function addPost(payload, token) {
   }
 }
 
-export async function addComment(payload, token, post) {
+export async function addComment(payload, user, post) {
   const options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: JSON.stringify(token),
+      Authorization: JSON.stringify(user),
     },
     body: JSON.stringify(payload),
   };

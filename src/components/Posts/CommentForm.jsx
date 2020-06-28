@@ -21,7 +21,7 @@ const CommentForm = ({ reference }) => {
       reference,
       uid: user.user.uid,
     };
-    await update(() => addComment(payload, user.token, data[reference]));
+    await update(() => addComment(payload, user, data[reference]));
   };
 
   if (!isLoggedIn) {

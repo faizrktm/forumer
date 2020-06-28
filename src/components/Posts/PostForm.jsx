@@ -26,7 +26,7 @@ const Post = () => {
   const onSubmit = async ({ value }) => {
     if (status === 'loading') return;
     if (formRef.current) formRef.current.reset();
-    await add(() => addPost({ uid: user.user.uid, ...value }, user.token));
+    await add(() => addPost({ uid: user.user.uid, ...value }, user));
   };
 
   const onNavigateToLogin = useCallback((e) => {

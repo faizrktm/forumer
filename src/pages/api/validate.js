@@ -1,6 +1,7 @@
 import admin from 'helper/api/admin';
 import firestore from 'helper/api/firestore';
 import { responseError, responseSuccess } from 'helper/api/response';
+import authMiddleware from 'helper/api/authMiddleware';
 
 const validate = async (token) => {
   try {
@@ -21,15 +22,14 @@ const validate = async (token) => {
   }
 };
 
-export default async (req, res) => {
+const handler = async (req, res) => {
   try {
     const { token } = JSON.parse(req.headers.authorization || '{}');
-    if (!token) {
-      return res.status(403).send(responseError(403, 'Auth token missing'));
-    }
     const result = await validate(token);
     return res.status(200).send(responseSuccess(200, result));
   } catch (err) {
     return res.status(500).send(responseError(500, err.message));
   }
 };
+
+export default authMiddleware(handler);
