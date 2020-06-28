@@ -1,4 +1,4 @@
-export const server = process.env.NODE_ENV !== 'production' ? 'https://uneug.vercel.app' : 'http://localhost:3000';
+export const server = process.env.NEXT_PUBLIC_API_URL;
 export default {
   TOKEN_COOKIES_NAME: 'GoogleIDToken',
   API: {
