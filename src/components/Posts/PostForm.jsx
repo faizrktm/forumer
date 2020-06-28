@@ -1,4 +1,9 @@
-import { memo, useContext, useCallback } from 'react';
+import {
+  memo,
+  useContext,
+  useCallback,
+  useRef,
+} from 'react';
 import { useRouter } from 'next/router';
 import {
   FormField,
@@ -13,13 +18,15 @@ import { ReduxerContext } from 'components/Reduxer';
 import Card from 'components/Card';
 
 const Post = () => {
+  const formRef = useRef(null);
   const { user, isLoggedIn } = useContext(AuthenticatedContext);
   const { add, status } = useContext(ReduxerContext);
   const router = useRouter();
 
-  const onSubmit = ({ value }) => {
+  const onSubmit = async ({ value }) => {
     if (status === 'loading') return;
-    add(() => addPost({ uid: user.user.uid, ...value }, user.token));
+    if (formRef.current) formRef.current.reset();
+    await add(() => addPost({ uid: user.user.uid, ...value }, user.token));
   };
 
   const onNavigateToLogin = useCallback((e) => {
@@ -37,12 +44,13 @@ const Post = () => {
       />
     );
   }
-  const buttonText = status === 'loading' ? 'Memposting...' : 'Post';
+
   return (
     <Card>
       <Box pad="16px">
         <Form
           onSubmit={onSubmit}
+          ref={formRef}
         >
           <FormField name="content">
             <TextInput
@@ -52,7 +60,7 @@ const Post = () => {
             />
           </FormField>
           <Box margin={{ top: 'small' }}>
-            <Button type="submit" color="brand" primary label={buttonText} alignSelf="start" />
+            <Button type="submit" color="brand" primary label="Post" />
           </Box>
         </Form>
       </Box>
