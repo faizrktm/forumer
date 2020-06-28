@@ -44,6 +44,9 @@ const Login = () => {
             <FormField name="password" label="Password">
               <TextInput name="password" type="password" required />
             </FormField>
+            {status !== 'idle' && status !== 'loading' && (
+              <Text color="status-error" size="small">{status}</Text>
+            )}
             <Box margin={{ top: 'medium' }}>
               <Button type="submit" label="Log In" primary />
             </Box>
