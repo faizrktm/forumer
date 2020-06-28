@@ -8,8 +8,6 @@ import {
   Text,
   Anchor,
 } from 'grommet';
-import styled from 'styled-components';
-import { breakpoint } from 'styled-components-breakpoint';
 import { useRouter } from 'next/router';
 
 import { AuthenticatedContext } from './Authenticated';
@@ -34,7 +32,7 @@ const Login = () => {
   };
 
   return (
-    <StyledCard>
+    <Card>
       <Box pad="16px" gap="small">
         <Box>
           <Form onSubmit={onSubmit}>
@@ -62,17 +60,8 @@ const Login = () => {
         </Box>
       </Box>
       {status === 'loading' && <Loading text="Processing..." />}
-    </StyledCard>
+    </Card>
   );
 };
 
 export default memo(Login);
-
-const StyledCard = styled(Card)`
-  width: 100%;
-  margin: 0px auto;
-
-  ${breakpoint('desktop')`
-    width: 40%;
-  `}
-`;

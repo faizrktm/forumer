@@ -12,10 +12,10 @@ const Header = () => {
   return (
     <Container>
       <Wrapper>
-        <Text color="brand" size="xlarge" weight="bold">Forumer</Text>
+        <Text color="brand" size="xlarge" weight="bold">{process.env.NEXT_PUBLIC_PROJECT_NAME}</Text>
         {isLoggedIn && (
           <Box>
-            <Anchor label={<Text size="small">Logout</Text>} onClick={logout} />
+            <Anchor label={<Text color="text" size="small">Logout</Text>} onClick={logout} />
           </Box>
         )}
       </Wrapper>
@@ -42,6 +42,7 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 74px;
+  max-width: 480px;
   width: 100%;
   margin: 0px auto;
   padding: 0px 16px;

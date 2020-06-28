@@ -2,7 +2,6 @@ import Head from 'next/head';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { selectColor } from 'helper/theme';
 import Header from './Header';
 
 const Page = ({ children, title }) => (
@@ -18,7 +17,7 @@ const Page = ({ children, title }) => (
 );
 
 Page.defaultProps = {
-  title: 'Forumer',
+  title: process.env.NEXT_PUBLIC_PROJECT_NAME,
 };
 
 Page.propTypes = {
@@ -34,6 +33,7 @@ const Main = styled.main`
   min-height: calc(100vh - 74px);
   margin: 0px auto;
   padding: 14px 16px 32px;
-  background-color: ${selectColor('background')};
+  max-width: 480px;
+  background-color: transparent;
   width: 100%;
 `;
