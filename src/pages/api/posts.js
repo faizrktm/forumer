@@ -47,7 +47,7 @@ const handlePost = async (req, res) => {
 
 const handleGet = async (_req, res) => {
   try {
-    let result = await firestore.posts.lists([['reference', '==', null]], [['timestamp', 'desc']]);
+    let result = await firestore.posts.lists([['reference', '==', null]], [['timestamp', 'desc']], 10);
     result = await restructureData(result);
     res.status(200).send(responseSuccess(200, result));
   } catch (err) {
