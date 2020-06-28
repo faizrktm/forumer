@@ -13,7 +13,7 @@ export default function SignIn() {
     }
   }, [isLoggedIn]);
   return (
-    <Page>
+    <Page title={`${process.env.NEXT_PUBLIC_PROJECT_NAME} - Sign Up`}>
       <SignUp />
     </Page>
   );
