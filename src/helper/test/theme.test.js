@@ -3,10 +3,10 @@ import { selectColor } from 'helper/theme';
 
 describe('selectColor', async (assert) => {
   assert({
-    given: 'brand',
-    should: 'return #1278CE',
-    actual: selectColor('brand'),
-    expected: '#1278CE',
+    given: 'placeholder',
+    should: 'return #98A4AE',
+    actual: selectColor('placeholder'),
+    expected: '#98A4AE',
   });
 
   assert({
