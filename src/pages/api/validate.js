@@ -10,7 +10,7 @@ const validate = async (token) => {
       user: {
         uid: user.uid,
         email: user.email,
-        name: user.displayName,
+        name: user.displayName || user.email.split('@')[0],
       },
       token,
     };
