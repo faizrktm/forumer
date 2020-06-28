@@ -1,6 +1,7 @@
 import App from 'next/app';
 import { Grommet } from 'grommet';
 import PropTypes from 'prop-types';
+import nextCookies from 'next-cookies';
 
 import theme from 'config/theme';
 import 'styles/normalize.css';
@@ -24,7 +25,7 @@ MyApp.getInitialProps = async (appContext) => {
 
   // only run on server-side, user should be auth'd if on client-side
   if (typeof window === 'undefined') {
-    const token = ctx.req.cookies[config.TOKEN_COOKIES_NAME];
+    const token = nextCookies(ctx)[config.TOKEN_COOKIES_NAME];
 
     // if token found, try to validate
     if (token) {
