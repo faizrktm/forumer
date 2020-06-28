@@ -33,6 +33,10 @@ const theme = deepMerge(grommet, {
     },
   },
   text: {
+    xxsmall: {
+      size: '10px',
+      height: '16px',
+    },
     xsmall: {
       size: '12px',
       height: '18px',
@@ -80,7 +84,7 @@ const theme = deepMerge(grommet, {
     margin: {
       bottom: '8px',
     },
-    extend: '> div { background-color: #F2FAFF; border-radius: 8px; }',
+    extend: '> div { background-color: #F8F8F8; border-radius: 8px; }',
   },
   select: {
     icons: {
