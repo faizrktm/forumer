@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import config from 'config';
 import Page from 'components/Page';
 import PostForm from 'components/Posts/PostForm';
@@ -14,6 +16,10 @@ export default function Home({ posts }) {
     </Page>
   );
 }
+
+Home.propTypes = {
+  posts: PropTypes.oneOfType([PropTypes.object]).isRequired,
+};
 
 // This gets called on every request
 export async function getServerSideProps() {
