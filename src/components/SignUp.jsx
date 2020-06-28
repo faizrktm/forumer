@@ -1,4 +1,9 @@
-import { useContext, memo, useState } from 'react';
+import {
+  memo,
+  useContext,
+  useState,
+  useRef,
+} from 'react';
 import {
   Box,
   Form,
@@ -9,6 +14,7 @@ import {
   Anchor,
 } from 'grommet';
 import { useRouter } from 'next/router';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 import { AuthenticatedContext } from './Authenticated';
 import Card from './Card';
@@ -19,9 +25,14 @@ const Login = () => {
   const [status, setStatus] = useState('idle');
   const { register } = useContext(AuthenticatedContext);
   const router = useRouter();
+  const refCaptcha = useRef();
 
   const onSubmit = async ({ value }) => {
-    if (status === 'loading') return;
+    let captcha = null;
+    if (refCaptcha.current) {
+      captcha = refCaptcha.current.getValue();
+    }
+    if (status === 'loading' || !captcha) return;
     try {
       setStatus('loading');
       await register(value);
@@ -46,6 +57,12 @@ const Login = () => {
               <Text color="status-error" size="small">{status}</Text>
             )}
             <Box margin={{ top: 'medium' }}>
+              <ReCAPTCHA
+                ref={refCaptcha}
+                sitekey={process.env.NEXT_PUBLIC_CAPTCHA_KEY}
+              />
+            </Box>
+            <Box margin={{ top: 'small' }}>
               <Button type="submit" label="Continue" primary />
             </Box>
           </Form>
