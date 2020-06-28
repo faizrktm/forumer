@@ -16,6 +16,7 @@ import {
 import { useRouter } from 'next/router';
 import ReCAPTCHA from 'react-google-recaptcha';
 
+import { password } from 'helper/validation';
 import { AuthenticatedContext } from './Authenticated';
 import Card from './Card';
 import SocialLogin from './SocialLogin';
@@ -47,10 +48,10 @@ const Login = () => {
       <Box pad="16px" gap="small">
         <Box>
           <Form onSubmit={onSubmit}>
-            <FormField name="email" label="Email">
+            <FormField name="email" label="Email" required>
               <TextInput name="email" required type="email" />
             </FormField>
-            <FormField name="password" label="Password">
+            <FormField name="password" label="Password" required validate={password}>
               <TextInput name="password" type="password" required />
             </FormField>
             {status !== 'idle' && status !== 'loading' && (

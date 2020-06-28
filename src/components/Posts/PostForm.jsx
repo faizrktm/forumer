@@ -52,7 +52,7 @@ const Post = () => {
           onSubmit={onSubmit}
           ref={formRef}
         >
-          <FormField name="content">
+          <FormField name="content" required>
             <TextInput
               placeholder="What is in your mind today?"
               name="content"

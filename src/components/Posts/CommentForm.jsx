@@ -29,8 +29,8 @@ const CommentForm = ({ reference }) => {
   }
   return (
     <Form onSubmit={onSubmit} ref={formRef}>
-      <FormField name="content">
-        <TextInput size="small" name="content" placeholder="Write a comment..." />
+      <FormField name="content" required>
+        <TextInput size="small" required name="content" placeholder="Write a comment..." />
       </FormField>
     </Form>
   );
