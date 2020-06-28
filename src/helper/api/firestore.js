@@ -14,20 +14,31 @@ class FirestoreEntry {
 
   /**
    *
-   * @param {Array} query example: [['uid', 'in', ['a', 'b']]]
+   * @param {Array || falsy} where Array in Array
+   * example: [['uid', 'in', ['a', 'b']]], null, false, undefined
+   * @param {Array || falsy} orderBy Array in Array
+   * example: [['name', 'desc'], ['name']]
+   * @param {number || falsy} limit example: 10
    */
-  async lists(query) {
+  async lists(where, orderBy, limit) {
     try {
-      let snapshot = null;
-      if (query) {
-        snapshot = this.collection;
-        query.forEach((item) => {
+      let snapshot = this.collection;
+      if (where) {
+        where.forEach((item) => {
           snapshot = snapshot.where(...item);
         });
-        snapshot = await snapshot.get();
-      } else {
-        snapshot = await this.collection.get();
       }
+      if (orderBy) {
+        orderBy.forEach((item) => {
+          snapshot = snapshot.orderBy(...item);
+        });
+      }
+      if (limit) {
+        snapshot = snapshot.limit(limit);
+      }
+
+      snapshot = await snapshot.get();
+
       let result = {};
       if (snapshot.empty) {
         return result;
