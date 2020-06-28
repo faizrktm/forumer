@@ -33,7 +33,7 @@ export default async (req, res) => {
   } = req;
   if (method === 'GET') {
     try {
-      let result = await firestore.posts.lists();
+      let result = await firestore.posts.lists(null, [['timestamp', 'desc']]);
       result = await insertUserToPost(result);
       res.status(200).send(responseSuccess(200, result));
     } catch (err) {
