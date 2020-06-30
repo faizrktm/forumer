@@ -44,7 +44,7 @@ const Login = () => {
 
   return (
     <Card>
-      <Box pad="16px" gap="small">
+      <Box pad="16px" gap="medium">
         <Box>
           <Form onSubmit={onSubmit}>
             <FormField name="email" label="Email">
@@ -62,7 +62,7 @@ const Login = () => {
                 sitekey={process.env.NEXT_PUBLIC_CAPTCHA_KEY}
               />
             </Box>
-            <Box margin={{ top: 'small' }}>
+            <Box margin={{ top: 'medium' }}>
               <Button type="submit" label="Log In" primary />
             </Box>
           </Form>

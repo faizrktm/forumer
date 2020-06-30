@@ -20,6 +20,7 @@ const theme = deepMerge(grommet, {
       sky: '#F2FAFF',
       placeholder: '#98A4AE',
       background: '#EFF2F5',
+      facebook: '#4267B2',
     },
     font: {
       family: 'Sarabun, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
