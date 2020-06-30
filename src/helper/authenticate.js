@@ -65,6 +65,13 @@ export async function signIn(type, body) {
       result = token;
     }
 
+    if (type === 'facebook') {
+      const provider = new firebase.auth.FacebookAuthProvider();
+      await firebase.auth().signInWithPopup(provider);
+      const token = await validate();
+      result = token;
+    }
+
     if (type === 'form') {
       const { email, password } = body;
       await firebase.auth().signInWithEmailAndPassword(email, password);
