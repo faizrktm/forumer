@@ -66,9 +66,17 @@ const ReduxerProvider = ({ children, initialValue }) => {
     }
   };
 
+  /**
+   * @param {{[id]: data}} payload
+   */
+  const addRaw = (payload) => {
+    dispatch({ type: 'SUCCESS', payload: { ...payload, ...data } });
+  };
+
   return (
     <ReduxerContext.Provider value={{
       data,
+      addRaw,
       add,
       update,
       status,
