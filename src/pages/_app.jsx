@@ -8,13 +8,16 @@ import 'styles/normalize.css';
 import 'styles/local.css';
 import config from 'config';
 import { AuthenticatedProvider } from 'components/Authenticated';
+import { ReduxerProvider } from 'components/Reduxer';
 
 function MyApp({ Component, pageProps }) {
   return (
     <Grommet theme={theme}>
-      <AuthenticatedProvider user={pageProps.user}>
-        <Component {...pageProps} />
-      </AuthenticatedProvider>
+      <ReduxerProvider initialValue={{}}>
+        <AuthenticatedProvider user={pageProps.user}>
+          <Component {...pageProps} />
+        </AuthenticatedProvider>
+      </ReduxerProvider>
     </Grommet>
   );
 }
