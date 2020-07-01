@@ -1,42 +1,28 @@
-import PropTypes from 'prop-types';
+import { useEffect, useContext } from 'react';
+import useSWR from 'swr';
 
 import config from 'config';
 import Page from 'components/Page';
 import PostForm from 'components/Posts/PostForm';
-import { ReduxerProvider } from 'components/Reduxer';
 import Posts from 'components/Posts';
+import { ReduxerContext } from 'components/Reduxer';
 
-export default function Home({ posts }) {
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
+export default function Home() {
+  const { data } = useSWR(config.API.POSTS, fetcher);
+  const { addRaw } = useContext(ReduxerContext);
+
+  useEffect(() => {
+    if (data) {
+      addRaw(data.result);
+    }
+  }, [data]);
+
   return (
     <Page>
-      <ReduxerProvider initialValue={posts}>
-        <PostForm />
-        <Posts />
-      </ReduxerProvider>
+      <PostForm />
+      <Posts />
     </Page>
   );
-}
-
-Home.propTypes = {
-  posts: PropTypes.oneOfType([PropTypes.object]).isRequired,
-};
-
-// This gets called on every request
-export async function getServerSideProps() {
-  // Fetch data from external API
-  let posts = {};
-  try {
-    const res = await fetch(config.API.POSTS);
-    const result = await res.json();
-
-    if (result.code !== 200) {
-      throw new Error(result.result.message);
-    }
-    posts = result.result;
-  } catch (error) {
-    // ignore
-  }
-
-  // Pass data to the page via props
-  return { props: { posts } };
 }
