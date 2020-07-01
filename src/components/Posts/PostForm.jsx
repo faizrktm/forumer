@@ -20,13 +20,16 @@ import Card from 'components/Card';
 const Post = () => {
   const formRef = useRef(null);
   const { user, isLoggedIn } = useContext(AuthenticatedContext);
-  const { add, status } = useContext(ReduxerContext);
+  const { mutate } = useContext(ReduxerContext);
   const router = useRouter();
 
   const onSubmit = async ({ value }) => {
-    if (status === 'loading') return;
-    if (formRef.current) formRef.current.reset();
-    await add(() => addPost({ uid: user.user.uid, ...value }, user));
+    try {
+      if (formRef.current) formRef.current.reset();
+      mutate(() => addPost({ uid: user.user.uid, ...value }, user));
+    } catch (error) {
+      // ignore
+    }
   };
 
   const onNavigateToLogin = useCallback((e) => {

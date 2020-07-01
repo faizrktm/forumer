@@ -11,17 +11,21 @@ const CommentForm = ({ reference }) => {
   const { user, isLoggedIn } = useContext(AuthenticatedContext);
   const {
     data,
-    update,
+    mutate,
   } = useContext(ReduxerContext);
 
   const onSubmit = async ({ value }) => {
-    if (formRef.current) formRef.current.reset();
-    const payload = {
-      ...value,
-      reference,
-      uid: user.user.uid,
-    };
-    await update(() => addComment(payload, user, data[reference]));
+    try {
+      if (formRef.current) formRef.current.reset();
+      const payload = {
+        ...value,
+        reference,
+        uid: user.user.uid,
+      };
+      mutate(() => addComment(payload, user, data[reference]), 'update');
+    } catch (error) {
+      // ignore
+    }
   };
 
   if (!isLoggedIn) {
