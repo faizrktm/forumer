@@ -21,7 +21,6 @@
     "prop-types": "^15.7.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-google-recaptcha": "^2.1.0",
     "styled-components": "^5.1.1",
     "styled-components-breakpoint": "^3.0.0-preview.20",
     "swr": "^0.2.3"
