@@ -37,10 +37,12 @@ export async function addComment(payload, user, post) {
       throw new Error(json.result.message);
     }
     return {
-      ...post,
-      comments: {
-        ...post.comments,
-        [json.result.id]: json.result,
+      [post.id]: {
+        ...post,
+        comments: {
+          ...post.comments,
+          [json.result.id]: json.result,
+        },
       },
     };
   } catch (error) {

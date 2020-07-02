@@ -6,10 +6,11 @@ import {
 } from 'react';
 import { useRouter } from 'next/router';
 import {
-  FormField,
-  Form,
-  Button,
   Box,
+  Button,
+  Form,
+  FormField,
+  Text,
   TextInput,
 } from 'grommet';
 import { addPost } from 'helper/posts';
@@ -20,13 +21,12 @@ import Card from 'components/Card';
 const Post = () => {
   const formRef = useRef(null);
   const { user, isLoggedIn } = useContext(AuthenticatedContext);
-  const { add, status } = useContext(ReduxerContext);
+  const { mutate, error } = useContext(ReduxerContext);
   const router = useRouter();
 
-  const onSubmit = async ({ value }) => {
-    if (status === 'loading') return;
+  const onSubmit = ({ value }) => {
     if (formRef.current) formRef.current.reset();
-    await add(() => addPost({ uid: user.user.uid, ...value }, user));
+    mutate(() => addPost({ uid: user.user.uid, ...value }, user));
   };
 
   const onNavigateToLogin = useCallback((e) => {
@@ -59,6 +59,7 @@ const Post = () => {
               required
             />
           </FormField>
+          {error && <Text size="small" color="status-error">{error.message}</Text>}
           <Box margin={{ top: 'small' }}>
             <Button type="submit" color="brand" primary label="Post" />
           </Box>
