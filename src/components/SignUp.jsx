@@ -1,7 +1,6 @@
 import {
   memo,
   useContext,
-  useRef,
 } from 'react';
 import {
   Box,
@@ -11,7 +10,6 @@ import {
   Button,
   Text,
 } from 'grommet';
-import ReCAPTCHA from 'react-google-recaptcha';
 
 import { password } from 'helper/validation';
 import { AuthenticatedContext } from './Authenticated';
@@ -25,14 +23,9 @@ const Login = () => {
     setError,
   } = useContext(StatusContext);
   const { register } = useContext(AuthenticatedContext);
-  const refCaptcha = useRef();
 
   const onSubmit = async ({ value }) => {
-    let captcha = null;
-    if (refCaptcha.current) {
-      captcha = refCaptcha.current.getValue();
-    }
-    if (status === 'loading' || !captcha) return;
+    if (status === 'loading') return;
     try {
       setLoading();
       await register(value);
@@ -53,12 +46,6 @@ const Login = () => {
       {status !== 'idle' && status !== 'loading' && (
         <Text color="status-error" size="small">{status}</Text>
       )}
-      <Box margin={{ top: 'medium' }}>
-        <ReCAPTCHA
-          ref={refCaptcha}
-          sitekey={process.env.NEXT_PUBLIC_CAPTCHA_KEY}
-        />
-      </Box>
       <Box margin={{ top: 'small' }}>
         <Button type="submit" label="Continue" primary />
       </Box>
