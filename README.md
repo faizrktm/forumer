@@ -2,7 +2,7 @@
 
 Web based topic management application.
 
-Demo available at: [https://uneug.vercel.app](https://uneug.vercel.app)
+Demo available at: [https://omong.in](https://omong.in)
 
 ## Getting Started
 
