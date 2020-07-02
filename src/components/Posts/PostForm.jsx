@@ -26,7 +26,7 @@ const Post = () => {
 
   const onSubmit = ({ value }) => {
     if (formRef.current) formRef.current.reset();
-    mutate(() => addPost({ uid: user.user.uid, ...value }, user));
+    mutate(() => addPost(value, user));
   };
 
   const onNavigateToLogin = useCallback((e) => {

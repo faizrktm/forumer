@@ -28,9 +28,12 @@ const restructureData = async (post) => {
 const handlePost = async (req, res) => {
   const {
     body,
+    headers,
   } = req;
   try {
-    let payload = { ...body };
+    const { user } = JSON.parse(headers.authorization || '{}');
+    const { uid } = user;
+    let payload = { ...body, uid };
     if (!body.reference) {
       payload = { ...payload, reference: null };
     }

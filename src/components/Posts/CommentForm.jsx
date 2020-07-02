@@ -25,7 +25,6 @@ const CommentForm = ({ reference }) => {
     const payload = {
       ...value,
       reference,
-      uid: user.user.uid,
     };
     mutate(() => addComment(payload, user, data[reference]), 'update');
   };
