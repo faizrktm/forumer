@@ -1,5 +1,10 @@
 import { memo, useRef, useContext } from 'react';
-import { FormField, Form, TextInput } from 'grommet';
+import {
+  Form,
+  FormField,
+  Text,
+  TextInput,
+} from 'grommet';
 import PropTypes from 'prop-types';
 
 import { addComment } from 'helper/posts';
@@ -12,20 +17,17 @@ const CommentForm = ({ reference }) => {
   const {
     data,
     mutate,
+    error,
   } = useContext(ReduxerContext);
 
   const onSubmit = async ({ value }) => {
-    try {
-      if (formRef.current) formRef.current.reset();
-      const payload = {
-        ...value,
-        reference,
-        uid: user.user.uid,
-      };
-      mutate(() => addComment(payload, user, data[reference]), 'update');
-    } catch (error) {
-      // ignore
-    }
+    if (formRef.current) formRef.current.reset();
+    const payload = {
+      ...value,
+      reference,
+      uid: user.user.uid,
+    };
+    mutate(() => addComment(payload, user, data[reference]), 'update');
   };
 
   if (!isLoggedIn) {
@@ -33,6 +35,7 @@ const CommentForm = ({ reference }) => {
   }
   return (
     <Form onSubmit={onSubmit} ref={formRef}>
+      {error && <Text size="small" color="status-error">{error.message}</Text>}
       <FormField name="content" required>
         <TextInput size="small" required name="content" placeholder="Write a comment..." />
       </FormField>
