@@ -8,7 +8,7 @@ import PostCard from './PostCard';
 const Posts = () => {
   const { data } = useContext(ReduxerContext);
   return (
-    <Box gap="small" margin={{ top: 'medium' }}>
+    <Box gap="medium" margin={{ top: 'medium' }}>
       {Object.keys(data).map((item) => (
         <PostCard
           key={item}
