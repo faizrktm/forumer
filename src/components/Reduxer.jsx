@@ -1,77 +1,48 @@
-import { useReducer } from 'react';
 import PropTypes from 'prop-types';
+import useSWR from 'swr';
 
 const ReduxerContext = React.createContext({ data: {} });
 
-function reducer(state, action) {
-  const { type, payload } = action;
-  switch (type) {
-    case 'REQUEST':
-      return ({
-        ...state,
-        status: 'loading',
-      });
-    case 'SUCCESS':
-      return ({
-        status: 'idle',
-        data: payload,
-      });
-    case 'FAILURE':
-      return ({
-        ...state,
-        status: payload,
-      });
-    default:
-      return state;
-  }
-}
+const fetcher = (...args) => fetch(...args)
+  .then((res) => res.json())
+  .then((res) => {
+    if (res.code !== 200) {
+      throw new Error(res.result.message);
+    }
+    return res.result;
+  });
 
-const ReduxerProvider = ({ children, initialValue }) => {
-  const [state, dispatch] = useReducer(reducer, { status: 'idle', data: initialValue });
-  const { data, status } = state;
+const ReduxerProvider = ({ uri, children }) => {
+  const {
+    data,
+    error,
+    mutate: mutateLocally,
+  } = useSWR(uri, fetcher, {
+    revalidateOnFocus: false,
+  });
 
   /**
    *
-   * @param {() => object} handler
-   * handler must return single object that does not a list. e.g. {...data}
+   * @param {() => {[id]: data}} handler
+   * @param {['add', 'update']} type
+   * list data contain one or more data with id
    */
-  const update = async (handler) => {
-    try {
-      dispatch({ type: 'REQUEST' });
+  const mutate = (handler, type = 'add') => {
+    mutateLocally(async (current) => {
       const response = await handler();
-      const payload = Object.keys(data).reduce((acc, curr) => {
-        if (curr === response.id) {
-          return ({ ...acc, [curr]: response });
-        }
-        return ({ ...acc, [curr]: data[curr] });
-      }, {});
-      dispatch({ type: 'SUCCESS', payload });
-    } catch (error) {
-      dispatch({ type: 'FAILURE', payload: error.message });
-    }
-  };
-
-  /**
-   *
-   * @param {() => object} handler
-   * handler must return object that contain id, eg: {[id]: data}
-   */
-  const add = async (handler) => {
-    try {
-      dispatch({ type: 'REQUEST' });
-      const response = await handler();
-      dispatch({ type: 'SUCCESS', payload: { ...response, ...data } });
-    } catch (error) {
-      dispatch({ type: 'FAILURE', payload: error.message });
-    }
+      let result = { ...response, ...current }; // push data to first if editing
+      if (type === 'update') {
+        result = { ...current, ...response }; // detect key and update w/o re-ordering
+      }
+      return result;
+    }, false);
   };
 
   return (
     <ReduxerContext.Provider value={{
-      data,
-      add,
-      update,
-      status,
+      data: data || {},
+      mutate,
+      error,
     }}
     >
       {children}
@@ -79,13 +50,9 @@ const ReduxerProvider = ({ children, initialValue }) => {
   );
 };
 
-ReduxerProvider.defaultProps = {
-  initialValue: null,
-};
-
 ReduxerProvider.propTypes = {
   children: PropTypes.node.isRequired,
-  initialValue: PropTypes.oneOfType([PropTypes.object]),
+  uri: PropTypes.string.isRequired,
 };
 
 export { ReduxerProvider, ReduxerContext };
