@@ -41,6 +41,27 @@ export const signOut = async () => {
   }
 };
 
+const register = async () => {
+  try {
+    const { currentUser } = firebase.auth();
+    if (!currentUser) {
+      throw new Error('Token Expired / User Not Found');
+    }
+    const token = await firebase.auth().currentUser.getIdToken(true);
+    const result = restructureUser(currentUser, token);
+    await fetch(config.API.REGISTER, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(result),
+    });
+    return result;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  *
  * @param {{email, password}} body
@@ -49,22 +70,8 @@ export const signUp = async (body) => {
   const { email, password } = body;
   try {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
-    const { currentUser } = firebase.auth();
-    if (!currentUser) {
-      throw new Error('Token Expired / User Not Found');
-    }
-    const token = await firebase.auth().currentUser.getIdToken(true);
-    const result = restructureUser(currentUser, token);
-
-    await fetch(config.API.REGISTER, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(result),
-    });
-
-    cookies.set(config.TOKEN_COOKIES_NAME, token);
+    const result = await register();
+    cookies.set(config.TOKEN_COOKIES_NAME, result.token);
     return result;
   } catch (error) {
     return Promise.reject(error);
@@ -82,14 +89,14 @@ export async function signIn(type, body) {
     if (type === 'google') {
       const provider = new firebase.auth.GoogleAuthProvider();
       await firebase.auth().signInWithPopup(provider);
-      const token = await validate();
+      const token = await register();
       result = token;
     }
 
     if (type === 'facebook') {
       const provider = new firebase.auth.FacebookAuthProvider();
       await firebase.auth().signInWithPopup(provider);
-      const token = await validate();
+      const token = await register();
       result = token;
     }
 
