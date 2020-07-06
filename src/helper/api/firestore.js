@@ -4,6 +4,7 @@ import admin from './admin';
 const keys = {
   POSTS: 'posts',
   USERS: 'users',
+  COMMENTS_COUNTER: 'comments_counter',
 };
 
 class FirestoreEntry {
@@ -20,7 +21,12 @@ class FirestoreEntry {
    * example: [['name', 'desc'], ['name']]
    * @param {number || falsy} limit example: 10
    */
-  async lists(where, orderBy, limit) {
+  async lists({
+    where,
+    orderBy,
+    limit,
+    startAfter,
+  }) {
     try {
       let snapshot = this.collection;
       if (where) {
@@ -32,6 +38,10 @@ class FirestoreEntry {
         orderBy.forEach((item) => {
           snapshot = snapshot.orderBy(...item);
         });
+      }
+      if (startAfter) {
+        const ref = await this.collection.doc(startAfter).get();
+        snapshot = snapshot.startAfter(ref);
       }
       if (limit) {
         snapshot = snapshot.limit(limit);
@@ -85,6 +95,43 @@ class FirestoreEntry {
     }
   }
 
+  async increment(doc, key) {
+    try {
+      const { FieldValue } = admin.firestore;
+      const snapshot = await this.collection.doc(doc).get();
+      if (!snapshot.exists) {
+        await this.collection.doc(doc).set({
+          [key]: FieldValue.increment(1),
+        });
+      } else {
+        await this.collection.doc(doc).update({
+          [key]: FieldValue.increment(1),
+        });
+      }
+
+      return true;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async decrement(doc, key) {
+    try {
+      const { FieldValue } = admin.firestore;
+      const snapshot = await this.collection.doc(doc).get();
+      if (!snapshot.exists) {
+        return true;
+      }
+      await this.collection.doc(doc).update({
+        [key]: FieldValue.increment(-1),
+      });
+
+      return true;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   async add(payload) {
     try {
       const { FieldValue } = admin.firestore;
@@ -105,6 +152,7 @@ class Firestore {
   constructor() {
     this.posts = new FirestoreEntry(keys.POSTS);
     this.users = new FirestoreEntry(keys.USERS);
+    this.commentsCounter = new FirestoreEntry(keys.COMMENTS_COUNTER);
   }
 
   posts() {
@@ -113,6 +161,10 @@ class Firestore {
 
   users() {
     return this.users;
+  }
+
+  commentsCount() {
+    return this.commentsCounter;
   }
 }
 
