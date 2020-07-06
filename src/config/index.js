@@ -3,5 +3,6 @@ export default {
   API: {
     VALIDATE: '/api/validate',
     POSTS: '/api/posts',
+    REGISTER: '/api/register',
   },
 };

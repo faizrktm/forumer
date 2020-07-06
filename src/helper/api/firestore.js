@@ -62,7 +62,7 @@ class FirestoreEntry {
     try {
       const snapshot = await this.collection.doc(doc).get();
       if (!snapshot.exists) {
-        return {};
+        return null;
       }
       return {
         id: doc,
@@ -93,7 +93,7 @@ class FirestoreEntry {
         timestamp: FieldValue.serverTimestamp(),
       };
       const response = await this.collection.add(data);
-      const result = await this.get(response.id);
+      const result = await this.get(response.id) || {};
       return result;
     } catch (error) {
       return Promise.reject(error);

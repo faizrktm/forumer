@@ -46,7 +46,7 @@ const Login = () => {
       {status !== 'idle' && status !== 'loading' && (
         <Text color="status-error" size="small">{status}</Text>
       )}
-      <Box margin={{ top: 'small' }}>
+      <Box margin={{ top: 'medium' }}>
         <Button type="submit" label="Continue" primary />
       </Box>
     </Form>
