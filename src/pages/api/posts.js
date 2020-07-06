@@ -1,27 +1,16 @@
 import { responseError, responseSuccess } from 'helper/api/response';
 import firestore from 'helper/api/firestore';
-import { getArrayUserIds, attachUserToPosts, attachCommentsToPosts } from 'helper/api/posts';
+import { getArrayUserIds, attachUserToPosts } from 'helper/api/posts';
 import authMiddleware from 'helper/api/authMiddleware';
 
 const restructureData = async (post) => {
+  if (!Object.keys(post).length) return post;
+
   const userIds = getArrayUserIds(post);
-  const userQuery = [['uid', 'in', userIds]];
-  const users = await firestore.users.lists(userQuery);
-  let result = attachUserToPosts(post, users);
-
-  const postIds = Object.keys(post).map((item) => item);
-  const commentQuery = [['reference', 'in', postIds]];
-  const comments = await firestore.posts.lists(commentQuery, [['timestamp', 'asc']]);
-
-  if (Object.keys(comments).length) {
-    const commentUserIds = getArrayUserIds(comments);
-    const commentUserQuery = [['uid', 'in', commentUserIds]];
-    const commentUsers = await firestore.users.lists(commentUserQuery);
-    const commentWithUsers = attachUserToPosts(comments, commentUsers);
-
-    result = attachCommentsToPosts(result, commentWithUsers);
-  }
-
+  const users = await firestore.users.lists({
+    where: [['uid', 'in', userIds]],
+  });
+  const result = attachUserToPosts(post, users);
   return result;
 };
 
@@ -38,6 +27,11 @@ const handlePost = async (req, res) => {
       payload = { ...payload, reference: null };
     }
     let result = await firestore.posts.add(payload);
+    // if had reference, it is a commment post
+    // increment total_comments for the reference
+    if (payload.reference) {
+      await firestore.commentsCounter.increment(payload.reference, 'total_comments');
+    }
     result = await restructureData({
       [result.id]: result,
     });
@@ -48,9 +42,15 @@ const handlePost = async (req, res) => {
   }
 };
 
-const handleGet = async (_req, res) => {
+const handleGet = async (req, res) => {
   try {
-    let result = await firestore.posts.lists([['reference', '==', null]], [['timestamp', 'desc']], 10);
+    const { query } = req;
+    let result = await firestore.posts.lists({
+      where: [['reference', '==', null]],
+      orderBy: [['timestamp', 'desc']],
+      limit: 10,
+      startAfter: query.start_after,
+    });
     result = await restructureData(result);
     res.status(200).send(responseSuccess(200, result));
   } catch (err) {
