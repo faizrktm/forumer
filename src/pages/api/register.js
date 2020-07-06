@@ -9,7 +9,10 @@ const handler = async (req, res) => {
     } = req;
     const { token, user } = body;
     await admin.auth().verifyIdToken(token, true);
-    await firestore.users.set(user.uid, user);
+    const isExist = await firestore.users.get(user.uid);
+    if (!isExist) {
+      await firestore.users.set(user.uid, user);
+    }
     return res.status(201).send(responseSuccess(201));
   } catch (err) {
     return res.status(500).send(responseError(500, err.message));
