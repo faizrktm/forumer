@@ -2,6 +2,20 @@ import cookies from 'js-cookie';
 import config from 'config';
 import firebase from 'helper/api/firebase';
 
+export const restructureUser = (user, token) => {
+  if (!user || !token) {
+    return 'user or token is missing';
+  }
+  return ({
+    user: {
+      uid: user.uid,
+      email: user.email,
+      name: user.displayName || user.email.split('@')[0],
+    },
+    token,
+  });
+};
+
 export const validate = async () => {
   try {
     const { currentUser } = firebase.auth();
@@ -43,8 +57,23 @@ export const signUp = async (body) => {
   const { email, password } = body;
   try {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
-    const token = await validate();
-    return token;
+    const { currentUser } = firebase.auth();
+    if (!currentUser) {
+      throw new Error('Token Expired / User Not Found');
+    }
+    const token = await firebase.auth().currentUser.getIdToken(true);
+    const result = restructureUser(currentUser, token);
+
+    await fetch(config.API.REGISTER, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(result),
+    });
+
+    cookies.set(config.TOKEN_COOKIES_NAME, token);
+    return result;
   } catch (error) {
     return Promise.reject(error);
   }
