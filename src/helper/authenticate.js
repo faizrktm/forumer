@@ -23,17 +23,9 @@ export const validate = async () => {
       throw new Error('Token Expired / User Not Found');
     }
     const token = await firebase.auth().currentUser.getIdToken(true);
+    const result = restructureUser(currentUser, token);
     cookies.set(config.TOKEN_COOKIES_NAME, token);
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: JSON.stringify({ token }),
-    };
-    const response = await fetch(config.API.VALIDATE, { headers });
-    const json = await response.json();
-    if (json.code !== 200) {
-      throw new Error(json.result.message);
-    }
-    return json.result;
+    return result;
   } catch (error) {
     return Promise.reject(error);
   }
