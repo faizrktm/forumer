@@ -4,7 +4,6 @@ import admin from './admin';
 const keys = {
   POSTS: 'posts',
   USERS: 'users',
-  COMMENTS_COUNTER: 'comments_counter',
 };
 
 class FirestoreEntry {
@@ -152,7 +151,6 @@ class Firestore {
   constructor() {
     this.posts = new FirestoreEntry(keys.POSTS);
     this.users = new FirestoreEntry(keys.USERS);
-    this.commentsCounter = new FirestoreEntry(keys.COMMENTS_COUNTER);
   }
 
   posts() {
@@ -161,10 +159,6 @@ class Firestore {
 
   users() {
     return this.users;
-  }
-
-  commentsCount() {
-    return this.commentsCounter;
   }
 }
 
