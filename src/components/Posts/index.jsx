@@ -7,16 +7,18 @@ import PostCard from './PostCard';
 
 const Posts = () => {
   const { data } = useContext(ReduxerContext);
+  const lists = Object.keys(data);
   return (
     <Box gap="medium" margin={{ top: 'medium' }}>
-      {Object.keys(data).map((item) => (
+      {lists.map((item) => (
         <PostCard
           key={item}
           id={item}
           content={data[item].content}
           name={data[item].user.name}
           time={timestampToHumans(data[item].timestamp._seconds)}
-          comments={data[item].comments}
+          withCommentBox={false}
+          totalComments={data[item].total_comments}
         />
       ))}
     </Box>
