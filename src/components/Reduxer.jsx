@@ -40,7 +40,7 @@ const ReduxerProvider = ({ uri, children }) => {
 
   return (
     <ReduxerContext.Provider value={{
-      data: data || {},
+      data,
       mutate,
       error,
     }}
