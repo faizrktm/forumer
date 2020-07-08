@@ -4,18 +4,13 @@ import { Box, Text, Anchor } from 'grommet';
 import { Tooltip, Share } from 'grommet-icons';
 
 import Card from 'components/Card';
-import { timestampToHumans } from 'helper/times';
-import CommentForm from './CommentForm';
-import CommentCard from './CommentCard';
 
 const PostCard = ({
-  id,
   content,
   name,
   time,
-  comments,
-  withCommentBox,
   totalComments,
+  onClickComment,
 }) => (
   <Card>
     <Box pad="16px">
@@ -50,42 +45,24 @@ const PostCard = ({
         )}
       </Box>
       <Box direction="row" align="center" justify="around" pad={{ top: 'medium' }}>
-        <Anchor size="small" label="Comment" color="placeholder" icon={<Tooltip size="16px" />} />
+        <Anchor size="small" onClick={onClickComment} label="Comment" color="placeholder" icon={<Tooltip size="16px" />} />
         <Anchor size="small" label="Share" color="placeholder" icon={<Share size="16px" />} />
       </Box>
-      <Box>
-        {comments && Object.keys(comments).map((item) => (
-          <CommentCard
-            key={item}
-            content={comments[item].content}
-            name={comments[item].user.name}
-            time={timestampToHumans(comments[item].timestamp._seconds)}
-          />
-        ))}
-      </Box>
-      {withCommentBox && (
-      <Box pad={{ top: 'small' }}>
-        <CommentForm reference={id} />
-      </Box>
-      )}
     </Box>
   </Card>
 );
 
 PostCard.defaultProps = {
-  comments: {},
-  withCommentBox: true,
   totalComments: 0,
+  onClickComment: null,
 };
 
 PostCard.propTypes = {
   content: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   time: PropTypes.string.isRequired,
-  comments: PropTypes.oneOfType([PropTypes.object]),
-  id: PropTypes.string.isRequired,
-  withCommentBox: PropTypes.bool,
   totalComments: PropTypes.number,
+  onClickComment: PropTypes.func,
 };
 
 export default memo(PostCard);
