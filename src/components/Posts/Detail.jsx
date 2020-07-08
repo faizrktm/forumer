@@ -20,7 +20,6 @@ const Post = () => {
         content={data.content}
         name={data.user.name}
         time={timestampToHumans(data.timestamp._seconds)}
-        totalComments={data.total_comments}
       />
       <ReduxerProvider uri={`${config.API.POSTS}/${data.id}/comments`}>
         <Comments reference={data.id} totalComments={data.total_comments} />
