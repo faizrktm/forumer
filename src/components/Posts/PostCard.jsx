@@ -40,7 +40,7 @@ const PostCard = ({
         </Box>
         {totalComments > 0 && (
         <Box alignSelf="end">
-          <Anchor size="small" color="placeholder" label={`${totalComments} Comments`} />
+          <Anchor onClick={onClickComment} size="small" color="placeholder" label={`${totalComments} Comments`} />
         </Box>
         )}
       </Box>
