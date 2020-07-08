@@ -5,14 +5,16 @@ import {
   Box,
   Text,
 } from 'grommet';
+import { useRouter } from 'next/router';
 import { AuthenticatedContext } from './Authenticated';
 
 const Header = () => {
   const { logout, isLoggedIn } = useContext(AuthenticatedContext);
+  const router = useRouter();
   return (
     <Container>
       <Wrapper>
-        <Text color="brand" size="xlarge" weight="bold">{process.env.NEXT_PUBLIC_PROJECT_NAME}</Text>
+        <Anchor onClick={() => router.push('/')} label={<Text color="brand" size="xlarge" weight="bold">{process.env.NEXT_PUBLIC_PROJECT_NAME}</Text>} />
         {isLoggedIn && (
           <Box>
             <Anchor label={<Text color="text" size="small">Logout</Text>} onClick={logout} />

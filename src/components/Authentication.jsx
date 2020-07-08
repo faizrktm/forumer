@@ -19,7 +19,7 @@ const authType = {
   },
 };
 
-const Authentication = ({ children, type }) => {
+const Authentication = ({ children, type, query }) => {
   const router = useRouter();
   return (
     <StatusProvider>
@@ -33,7 +33,10 @@ const Authentication = ({ children, type }) => {
             <Box width="20%" border={{ color: 'placeholder', size: '1px', side: 'bottom' }} background="placeholder" margin={{ vertical: 'small' }} />
             <Anchor
               label={<Text weight="bold" size="small" color="text">{authType[type].label}</Text>}
-              onClick={() => router.push(authType[type].callback)}
+              onClick={() => router.push({
+                pathname: authType[type].callback,
+                query,
+              })}
             />
           </Box>
         </Box>
@@ -50,9 +53,14 @@ const Authentication = ({ children, type }) => {
   );
 };
 
+Authentication.defaultProps = {
+  query: {},
+};
+
 Authentication.propTypes = {
   children: PropTypes.node.isRequired,
   type: PropTypes.string.isRequired,
+  query: PropTypes.oneOfType([PropTypes.object]),
 };
 
 export default memo(Authentication);

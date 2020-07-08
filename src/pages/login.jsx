@@ -7,15 +7,19 @@ import Authentication from 'components/Authentication';
 
 export default function SignIn() {
   const router = useRouter();
+  const { query } = router;
   const { isLoggedIn } = useContext(AuthenticatedContext);
   useEffect(() => {
-    if (isLoggedIn) {
+    const { redirect } = query;
+    if (isLoggedIn && redirect) {
+      router.push(...redirect);
+    } else if (isLoggedIn && !redirect) {
       router.push('/');
     }
   }, [isLoggedIn]);
   return (
     <Page title={`${process.env.NEXT_PUBLIC_PROJECT_NAME} - Log In`}>
-      <Authentication type="login">
+      <Authentication query={query} type="login">
         <Login />
       </Authentication>
     </Page>

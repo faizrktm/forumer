@@ -1,21 +1,12 @@
 import admin from 'helper/api/admin';
-import firestore from 'helper/api/firestore';
 import { responseError, responseSuccess } from 'helper/api/response';
-import authMiddleware from 'helper/api/authMiddleware';
+import { restructureUser } from 'helper/authenticate';
 
 const validate = async (token) => {
   try {
     const decodedToken = await admin.auth().verifyIdToken(token, true);
     const user = await admin.auth().getUser(decodedToken.uid);
-    const result = {
-      user: {
-        uid: user.uid,
-        email: user.email,
-        name: user.displayName || user.email.split('@')[0],
-      },
-      token,
-    };
-    await firestore.users.set(user.uid, result.user);
+    const result = restructureUser(user, token);
     return result;
   } catch (error) {
     return Promise.reject(error);
@@ -25,6 +16,10 @@ const validate = async (token) => {
 const handler = async (req, res) => {
   try {
     const { token } = JSON.parse(req.headers.authorization || '{}');
+    if (!token) {
+      res.status(403).send(responseError(403, 'Missing token'));
+      return null;
+    }
     const result = await validate(token);
     return res.status(200).send(responseSuccess(200, result));
   } catch (err) {
@@ -32,4 +27,4 @@ const handler = async (req, res) => {
   }
 };
 
-export default authMiddleware(handler);
+export default handler;

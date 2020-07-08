@@ -8,6 +8,7 @@ import 'styles/normalize.css';
 import 'styles/local.css';
 import config from 'config';
 import { AuthenticatedProvider } from 'components/Authenticated';
+import Request, { isServer } from 'helper/request';
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -21,10 +22,11 @@ function MyApp({ Component, pageProps }) {
 
 MyApp.getInitialProps = async (appContext) => {
   const { ctx } = appContext;
+  const { req } = ctx;
   const appProps = await App.getInitialProps(appContext);
 
   // only run on server-side, user should be auth'd if on client-side
-  if (typeof window === 'undefined') {
+  if (isServer()) {
     const token = nextCookies(ctx)[config.TOKEN_COOKIES_NAME];
 
     // if token found, try to validate
@@ -34,7 +36,9 @@ MyApp.getInitialProps = async (appContext) => {
           'Content-Type': 'application/json',
           Authorization: JSON.stringify({ token }),
         };
-        const result = await fetch(config.API.VALIDATE, { headers });
+        const request = new Request(req);
+        const { baseUrl } = request;
+        const result = await fetch(`${baseUrl}${config.API.VALIDATE}`, { headers });
         const json = await result.json();
         if (json.code !== 200) {
           throw new Error(json.result.message);
