@@ -21,7 +21,7 @@ export async function addPost(payload, user) {
   }
 }
 
-export async function addComment(payload, user, post) {
+export async function addComment(id, payload, user) {
   const options = {
     method: 'POST',
     headers: {
@@ -31,19 +31,14 @@ export async function addComment(payload, user, post) {
     body: JSON.stringify(payload),
   };
   try {
-    const response = await fetch(config.API.POSTS, options);
+    const uri = `${config.API.POSTS}/${id}/comments`;
+    const response = await fetch(uri, options);
     const json = await response.json();
     if (json.code !== 200) {
       throw new Error(json.result.message);
     }
     return {
-      [post.id]: {
-        ...post,
-        comments: {
-          ...post.comments,
-          [json.result.id]: json.result,
-        },
-      },
+      [json.result.id]: json.result,
     };
   } catch (error) {
     return Promise.reject(error);

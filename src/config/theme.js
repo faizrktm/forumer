@@ -95,6 +95,9 @@ const theme = deepMerge(grommet, {
   textInput: {
     extend: 'border: none !important;',
   },
+  anchor: {
+    extend: 'text-decoration: none !important;',
+  },
 });
 
 export default theme;
