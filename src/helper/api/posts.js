@@ -1,3 +1,5 @@
+import firestore from './firestore';
+
 export const getArrayUserIds = (obj) => {
   let users = Object
     .keys(obj)
@@ -43,4 +45,25 @@ export const attachCommentsToPosts = (posts, comments) => {
         comments: commentsByReference[curr] || {},
       },
     }), {});
+};
+
+export const restructureData = async (post) => {
+  if (!Object.keys(post).length) return post;
+
+  const userIds = getArrayUserIds(post);
+  const users = await firestore.users.lists({
+    where: [['uid', 'in', userIds]],
+  });
+  const result = attachUserToPosts(post, users);
+  return result;
+};
+
+export const restructureDataDetail = async (post) => {
+  if (!post) return post;
+  const { uid } = post;
+  const user = await firestore.users.get(uid);
+  return {
+    ...post,
+    user,
+  };
 };

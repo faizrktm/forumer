@@ -20,7 +20,12 @@ class FirestoreEntry {
    * example: [['name', 'desc'], ['name']]
    * @param {number || falsy} limit example: 10
    */
-  async lists(where, orderBy, limit) {
+  async lists({
+    where,
+    orderBy,
+    limit,
+    startAfter,
+  }) {
     try {
       let snapshot = this.collection;
       if (where) {
@@ -32,6 +37,10 @@ class FirestoreEntry {
         orderBy.forEach((item) => {
           snapshot = snapshot.orderBy(...item);
         });
+      }
+      if (startAfter) {
+        const ref = await this.collection.doc(startAfter).get();
+        snapshot = snapshot.startAfter(ref);
       }
       if (limit) {
         snapshot = snapshot.limit(limit);
@@ -80,6 +89,43 @@ class FirestoreEntry {
         id: doc,
         ...payload,
       };
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async increment(doc, key) {
+    try {
+      const { FieldValue } = admin.firestore;
+      const snapshot = await this.collection.doc(doc).get();
+      if (!snapshot.exists) {
+        await this.collection.doc(doc).set({
+          [key]: FieldValue.increment(1),
+        });
+      } else {
+        await this.collection.doc(doc).update({
+          [key]: FieldValue.increment(1),
+        });
+      }
+
+      return true;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async decrement(doc, key) {
+    try {
+      const { FieldValue } = admin.firestore;
+      const snapshot = await this.collection.doc(doc).get();
+      if (!snapshot.exists) {
+        return true;
+      }
+      await this.collection.doc(doc).update({
+        [key]: FieldValue.increment(-1),
+      });
+
+      return true;
     } catch (error) {
       return Promise.reject(error);
     }

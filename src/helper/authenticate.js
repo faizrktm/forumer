@@ -24,7 +24,6 @@ export const validate = async () => {
     }
     const token = await firebase.auth().currentUser.getIdToken(true);
     const result = restructureUser(currentUser, token);
-    cookies.set(config.TOKEN_COOKIES_NAME, token);
     return result;
   } catch (error) {
     return Promise.reject(error);
@@ -107,6 +106,7 @@ export async function signIn(type, body) {
       result = token;
     }
 
+    cookies.set(config.TOKEN_COOKIES_NAME, result.token);
     return result;
   } catch (error) {
     return Promise.reject(error);

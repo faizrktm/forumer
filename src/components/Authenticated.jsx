@@ -24,7 +24,7 @@ const AuthenticatedProvider = ({ children, user }) => {
           const result = await validate();
           setCurrentUser(result);
         } catch (error) {
-          console.log(error.message);
+          // ignore
         }
       })();
     }
